@@ -7,7 +7,7 @@ import java.util.concurrent.ForkJoinPool;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String folderPath = "c:/users/agrab/desktop/games";
+        String folderPath = "c:/users/agrab/desktop/2";
         File file = new File(folderPath);
         Path path = Paths.get(folderPath);
 
@@ -25,7 +25,9 @@ public class Main {
                 new FolderSizeCalculator(file);
         ForkJoinPool pool = new ForkJoinPool();
         long size2 = pool.invoke(calculator);
-        System.out.println(humanReadable(size2, SI.YES));
+        String result = humanReadable(size2, SI.YES);
+        System.out.println(result);
+        System.out.println(humanReadbleByte(result));
     }
 
     public static Long getFolderSize(File file) {
@@ -77,6 +79,40 @@ public class Main {
         if (si.value == 1024) pre = "KMGTPE".charAt(exp - 1) + "";
         else pre = "KMGTPE".charAt(exp - 1) + "i";
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+    private static long humanReadbleByte(String string)
+    {
+        long bytes = 1024;
+        long size = Long.parseLong(string.replaceAll("[^0-9]",""));
+        switch (string)
+        {
+            case "B":
+            {
+                return size;
+            }
+            case "KB":
+            {
+                return size * bytes;
+            }
+            case "MB":
+            {
+                return (long) (size * Math.pow(bytes,2));
+            }
+            case "GB":
+            {
+                return (long) (size * Math.pow(bytes, 3));
+            }
+            case "TB":
+            {
+                return (long) (size * Math.pow(bytes, 4));
+            }
+            case "PT":
+            {
+                return (long) (size * Math.pow(bytes, 5));
+            }
+
+        }
+        return size;
     }
 
 }
