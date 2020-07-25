@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String folderPath = "c:/users/agrab/desktop/2";
+        String folderPath = "c:/users/agrab/desktop/games";
         File file = new File(folderPath);
         Path path = Paths.get(folderPath);
 
@@ -23,11 +23,15 @@ public class Main {
     }
 
     public static Long getFolderSize(File file) {
+        if (file.isFile())
+        {
+            return file.length();
+        }
         long sum = 0;
         File[] folder = file.listFiles();
         assert folder != null;
         for (File files : folder) {
-            sum += files.length();
+            sum += getFolderSize(files);
         }
         return sum;
     }
