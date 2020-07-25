@@ -7,7 +7,7 @@ import java.util.concurrent.ForkJoinPool;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String folderPath = "c:/users/agrab/desktop/2";
+        String folderPath = "c:/users/agrab/desktop";
         File file = new File(folderPath);
         Path path = Paths.get(folderPath);
 
@@ -84,7 +84,9 @@ public class Main {
     {
         long bytes = 1024;
         long size = Long.parseLong(string.replaceAll("[^0-9]",""));
-        switch (string)
+        String result = string.replaceAll("[\\d, ]+", "");
+
+        switch (result)
         {
             case "B":
             {
@@ -112,7 +114,6 @@ public class Main {
             }
 
         }
-        return size;
+        return (long) (size * Math.pow(bytes, 6));
     }
-
 }
