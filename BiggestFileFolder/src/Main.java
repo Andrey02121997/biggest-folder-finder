@@ -10,7 +10,8 @@ public class Main {
         String folderPath = "c:/users/agrab/desktop/games";
         File file = new File(folderPath);
         Path path = Paths.get(folderPath);
-        Node root = new Node(file);
+        long sizeLimite = 50*1024*1024;
+        Node root = new Node(file, sizeLimite);
 
         long size = visitor(path);
 
