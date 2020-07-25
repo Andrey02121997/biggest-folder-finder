@@ -7,9 +7,10 @@ import java.util.concurrent.ForkJoinPool;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String folderPath = "c:/users/agrab/desktop";
+        String folderPath = "c:/users/agrab/desktop/games";
         File file = new File(folderPath);
         Path path = Paths.get(folderPath);
+        Node root = new Node(file);
 
         long size = visitor(path);
 
@@ -22,17 +23,14 @@ public class Main {
 
         System.out.println("-----------");
         FolderSizeCalculator calculator =
-                new FolderSizeCalculator(file);
+                new FolderSizeCalculator(root);
         ForkJoinPool pool = new ForkJoinPool();
-        long size2 = pool.invoke(calculator);
-        String result = humanReadable(size2, SI.YES);
-        System.out.println(result);
-        System.out.println(humanReadbleByte(result));
+        pool.invoke(calculator);
+        System.out.println(root);
     }
 
     public static Long getFolderSize(File file) {
-        if (file.isFile())
-        {
+        if (file.isFile()) {
             return file.length();
         }
         long sum = 0;
@@ -56,6 +54,7 @@ public class Main {
         Files.walkFileTree(path, fileVisitor);
         return fileVisitor.getFilesCount();
     }
+
     enum SI {
         YES(1024),
         NO(1000);
@@ -67,49 +66,43 @@ public class Main {
         }
     }
 
-    private static String humanReadable(long bytes, SI si)
-    {
+    private static String humanReadable(long bytes, SI si) {
         int unit = si.value;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre;
-        if (si.value == 1000){
-            pre = "kMGTPE".charAt(exp - 1) + "";}
-        else{ pre = "kMGTPE".charAt(exp - 1) + "i";}
+        if (si.value == 1000) {
+            pre = "kMGTPE".charAt(exp - 1) + "";
+        } else {
+            pre = "kMGTPE".charAt(exp - 1) + "i";
+        }
         if (si.value == 1024) pre = "KMGTPE".charAt(exp - 1) + "";
         else pre = "KMGTPE".charAt(exp - 1) + "i";
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
-    private static long humanReadbleByte(String string)
-    {
+
+    private static long humanReadbleByte(String string) {
         long bytes = 1024;
-        long size = Long.parseLong(string.replaceAll("[^0-9]",""));
+        long size = Long.parseLong(string.replaceAll("[^0-9]", ""));
         String result = string.replaceAll("[\\d, ]+", "");
 
-        switch (result)
-        {
-            case "B":
-            {
+        switch (result) {
+            case "B": {
                 return size;
             }
-            case "KB":
-            {
+            case "KB": {
                 return size * bytes;
             }
-            case "MB":
-            {
-                return (long) (size * Math.pow(bytes,2));
+            case "MB": {
+                return (long) (size * Math.pow(bytes, 2));
             }
-            case "GB":
-            {
+            case "GB": {
                 return (long) (size * Math.pow(bytes, 3));
             }
-            case "TB":
-            {
+            case "TB": {
                 return (long) (size * Math.pow(bytes, 4));
             }
-            case "PT":
-            {
+            case "PT": {
                 return (long) (size * Math.pow(bytes, 5));
             }
 
